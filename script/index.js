@@ -176,7 +176,7 @@ function updateTotalCount() {
 function renderInterview() {
   if (interviewJob.length == 0) {
     interviewSection.innerHTML = "";
-    console.log("nothing");
+    
 
     const nothingDiv = document.createElement("div");
     nothingDiv.innerHTML = `
@@ -250,7 +250,7 @@ function renderRejected() {
   } else {
     rejectedSection.innerHTML = "";
     for (let rejected of rejectedJob) {
-      console.log(rejected);
+      
       const newDiv = document.createElement("div");
       newDiv.innerHTML = `
       <div class="job-card flex justify-between bg-base-100 shadow p-4">

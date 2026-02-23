@@ -11,6 +11,7 @@ const totalCountElement = document.getElementsByClassName("total-count");
 const mainContainer = document.querySelector("main");
 const interviewSection = document.getElementById("interview-section");
 const rejectedSection = document.getElementById("rejected-section");
+
 // total count
 for (let count of totalCountElement) {
   count.textContent = jobContainer.children.length;
@@ -133,6 +134,26 @@ mainContainer.addEventListener("click", function (e) {
     if (!interviewSection.classList.contains("hidden")) renderInterview();
     if (!rejectedSection.classList.contains("hidden")) renderRejected();
   }
+  // condition if trash btn clicked
+  if (e.target.classList.contains("fa-trash-can")) {
+  const card = e.target.closest(".job-card");
+  const companyName = card.querySelector(".company-name").innerText;
+
+  // remove from arrays
+  interviewJob = interviewJob.filter(job => job.companyName !== companyName);
+  rejectedJob = rejectedJob.filter(job => job.companyName !== companyName);
+
+  if (!jobContainer.classList.contains("hidden")) {
+    card.remove();
+    updateTotalCount();
+  }
+
+  
+  if (!interviewSection.classList.contains("hidden")) renderInterview();
+  if (!rejectedSection.classList.contains("hidden")) renderRejected();
+
+  updateCount();
+}
 });
 function updateCount() {
   interviewCountEle.innerText = interviewJob.length;
@@ -146,6 +167,11 @@ function updateCount() {
     chnageCount.innerText = rejectedJob.length;
   }
 }
+function updateTotalCount() {
+  for (let count of totalCountElement) {
+    count.textContent = jobContainer.children.length;
+  }
+}
 
 function renderInterview() {
   if (interviewJob.length == 0) {
@@ -156,7 +182,7 @@ function renderInterview() {
     nothingDiv.innerHTML = `
 
      <section class="max-w-7xl my-10 mx-auto bg-green-300 text-center">
-        <div class="mx-auto bg-base-100  ">
+        <div class="mx-auto bg-base-100 py-5 px-3 ">
             <img class="mx-auto" src="assest/jobs.png" alt="">
             <h2 class="company-name text-[#002C5C] font-semibold text-2xl">No jobs available</h2>
             <p class="text-[#323B49] text-xl">Check back soon for new job opportunities</p>
@@ -211,7 +237,7 @@ function renderRejected() {
     const rejectDiv = document.createElement("div");
     rejectDiv.innerHTML = `
       <section class="max-w-7xl my-10 mx-auto bg-green-300 text-center">
-        <div class="mx-auto bg-base-100  ">
+        <div class="mx-auto bg-base-100  py-5 px-3">
             <img class="mx-auto" src="assest/jobs.png" alt="">
             <h2 class="company-name text-2xl text-[#002C5C] font-semibold ">No jobs available</h2>
             <p class="text-[#323B49] text-xl">Check back soon for new job opportunities</p>

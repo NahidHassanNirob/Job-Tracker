@@ -1,7 +1,7 @@
 let interviewJob = [];
 let rejectedJob = [];
-let changeCountContainer=document.getElementById("change-count-container")
-let chnageCount=document.getElementById("change-count")
+let changeCountContainer = document.getElementById("change-count-container");
+let chnageCount = document.getElementById("change-count");
 const interviewCountEle = document.getElementById("interview-count");
 interviewCountEle.innerText = interviewJob.length;
 const rejectedCountEle = document.getElementById("rejected-count");
@@ -30,27 +30,31 @@ function btnToggol(id) {
     interviewSection.classList.add("hidden");
     rejectedSection.classList.add("hidden");
     jobContainer.classList.remove("hidden");
-    changeCountContainer.classList.add("hidden")
+    changeCountContainer.classList.add("hidden");
   }
   if (id == "interview-toggle-btn") {
     jobContainer.classList.add("hidden");
     rejectedSection.classList.add("hidden");
     interviewSection.classList.remove("hidden");
-    changeCountContainer.classList.remove("hidden")
-    chnageCount.innerText=interviewJob.length
-
+    changeCountContainer.classList.remove("hidden");
+    // chnageCount.innerText = interviewJob.length;
+    updateCount();
+    renderInterview();
   }
   if (id == "rejected-toggle-btn") {
     interviewSection.classList.add("hidden");
     jobContainer.classList.add("hidden");
     rejectedSection.classList.remove("hidden");
-    changeCountContainer.classList.remove("hidden")
-    chnageCount.innerText=rejectedJob.length
+    changeCountContainer.classList.remove("hidden");
+    // chnageCount.innerText = rejectedJob.length;
+    updateCount();
+    renderRejected();
   }
 }
 
 // event delegation
-jobContainer.addEventListener("click", function (e) {
+mainContainer.addEventListener("click", function (e) {
+  // conditon if interview-btn click
   if (e.target.classList.contains("interview-btn")) {
     const parentNode = e.target.parentNode.parentNode;
     const companyName = parentNode.querySelector(".company-name").innerText;
@@ -79,13 +83,17 @@ jobContainer.addEventListener("click", function (e) {
       // e.target.disabled = true;
       // e.target.innerText = "ADDED";
       typeEle.innerText = "INTERVIEW";
-      typeEle.classList.remove("bg-red-500","text-white")
-      typeEle.classList.add("bg-green-400","text-white")
+      typeEle.classList.remove("bg-red-500", "text-white");
+      typeEle.classList.add("bg-green-400", "text-white");
     }
-    rejectedJob=rejectedJob.filter(jobs=>jobs.companyName!==newData.companyName);
+    rejectedJob = rejectedJob.filter(
+      (jobs) => jobs.companyName !== newData.companyName,
+    );
     updateCount();
-    
+    if (!interviewSection.classList.contains("hidden")) renderInterview();
+    if (!rejectedSection.classList.contains("hidden")) renderRejected();
   }
+  // condition if rejceted-btn click
   if (e.target.classList.contains("rejected-btn")) {
     const parentNode = e.target.parentNode.parentNode;
     const companyName = parentNode.querySelector(".company-name").innerText;
@@ -115,18 +123,141 @@ jobContainer.addEventListener("click", function (e) {
       // e.target.disabled = true;
       // e.target.innerText = "ADDED";
       typeEle.innerText = "REJECTED";
-      typeEle.classList.remove("bg-green-400","text-white")
-      typeEle.classList.add("bg-red-500","text-white")
-      
+      typeEle.classList.remove("bg-green-400", "text-white");
+      typeEle.classList.add("bg-red-500", "text-white");
     }
-    interviewJob=interviewJob.filter(jobs=>jobs.companyName!==newData.companyName);
-    updateCount()
+    interviewJob = interviewJob.filter(
+      (jobs) => jobs.companyName !== newData.companyName,
+    );
+    updateCount();
+    if (!interviewSection.classList.contains("hidden")) renderInterview();
+    if (!rejectedSection.classList.contains("hidden")) renderRejected();
   }
 });
 function updateCount() {
   interviewCountEle.innerText = interviewJob.length;
   rejectedCountEle.innerText = rejectedJob.length;
-  
+
+  if (!interviewSection.classList.contains("hidden")) {
+    chnageCount.innerText = interviewJob.length;
+  }
+
+  if (!rejectedSection.classList.contains("hidden")) {
+    chnageCount.innerText = rejectedJob.length;
+  }
 }
 
-function render() {}
+function renderInterview() {
+  if (interviewJob.length == 0) {
+    interviewSection.innerHTML = "";
+    console.log("nothing");
+
+    const nothingDiv = document.createElement("div");
+    nothingDiv.innerHTML = `
+
+     <section class="max-w-7xl my-10 mx-auto bg-green-300 text-center">
+        <div class="mx-auto bg-base-100  ">
+            <img class="mx-auto" src="assest/jobs.png" alt="">
+            <h2 class="company-name text-[#002C5C] font-semibold text-2xl">No jobs available</h2>
+            <p class="text-[#323B49] text-xl">Check back soon for new job opportunities</p>
+        </div>
+
+    </section>
+
+     `;
+    interviewSection.appendChild(nothingDiv);
+    updateCount();
+  } else {
+    interviewSection.innerHTML = "";
+    for (let job of interviewJob) {
+      const newDiv = document.createElement("div");
+      newDiv.innerHTML = `
+     <div class="job-card flex justify-between bg-base-100 shadow p-4">
+            <div class="space-y-4">
+                <div>
+                    <h2 class="company-name text-[#002C5C] font-semibold text-lg">${job.companyName}</h2>
+                    <p class="job-role text-[#64748B] font-semibold  text-lg">${job.jobRole}</p>
+
+                </div>
+                <div>
+                    <p class="salary font text-[#64748B]">${job.salary}</p>
+                </div>
+                <div class="space-y-2">
+                    <button class="type text-[#002C5C] btn btn-soft">${job.type}</button>
+                    <p class="description text-[#323B49]">${job.description}</p>
+                </div>
+                <div>
+                    <button class=" interview-btn btn btn-outline btn-success">INTERVIEW</button>
+                    <button class=" rejected-btn btn btn-outline btn-error">REJECTED</button>
+                </div>
+            </div>
+            <div>
+                <i class="fa-solid fa-trash-can cursor-pointer"></i>
+            </div>
+
+
+
+        </div>
+    
+    
+        `;
+      interviewSection.appendChild(newDiv);
+    }
+  }
+}
+function renderRejected() {
+  if (rejectedJob.length == 0) {
+    rejectedSection.innerHTML = "";
+    const rejectDiv = document.createElement("div");
+    rejectDiv.innerHTML = `
+      <section class="max-w-7xl my-10 mx-auto bg-green-300 text-center">
+        <div class="mx-auto bg-base-100  ">
+            <img class="mx-auto" src="assest/jobs.png" alt="">
+            <h2 class="company-name text-2xl text-[#002C5C] font-semibold ">No jobs available</h2>
+            <p class="text-[#323B49] text-xl">Check back soon for new job opportunities</p>
+        </div>
+
+    </section>
+     `;
+    rejectedSection.appendChild(rejectDiv);
+    updateCount();
+  } else {
+    rejectedSection.innerHTML = "";
+    for (let rejected of rejectedJob) {
+      console.log(rejected);
+      const newDiv = document.createElement("div");
+      newDiv.innerHTML = `
+      <div class="job-card flex justify-between bg-base-100 shadow p-4">
+            <div class="space-y-4">
+                <div>
+                    <h2 class="company-name text-[#002C5C] font-semibold text-lg">${rejected.companyName}</h2>
+                    <p class="job-role text-[#64748B] font-semibold  text-lg">${rejected.jobRole}</p>
+
+                </div>
+                <div>
+                    <p class="salary font text-[#64748B]">${rejected.salary}</p>
+                </div>
+                <div class="space-y-2">
+                    <button class="type text-[#002C5C] btn btn-soft">${rejected.type}</button>
+                    <p class="description text-[#323B49]">${rejected.description}</p>
+                </div>
+                <div>
+                    <button class=" interview-btn btn btn-outline btn-success">INTERVIEW</button>
+                    <button class=" rejected-btn btn btn-outline btn-error">REJECTED</button>
+                </div>
+            </div>
+            <div>
+                <i class="fa-solid fa-trash-can cursor-pointer"></i>
+            </div>
+
+
+
+        </div>
+    
+    
+        
+      `;
+      rejectedSection.appendChild(newDiv);
+    }
+  }
+}

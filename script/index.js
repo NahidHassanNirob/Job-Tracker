@@ -120,7 +120,7 @@ mainContainer.addEventListener("click", function (e) {
       console.log("not existed");
       rejectedJob.push(newData);
       // console.log(interviewJob);
-      updateCount();
+      // updateCount();
       // e.target.disabled = true;
       // e.target.innerText = "ADDED";
       typeEle.innerText = "REJECTED";
